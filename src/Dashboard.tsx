@@ -2,8 +2,9 @@ import {useData} from "./hooks/useData.tsx";
 import Chart from "./Chart.tsx";
 
 export const Dashboard = () => {
-    const {data, isLoading} = useData()
+    const {data, isLoading, isError} = useData()
     if (isLoading) return "Loading..."
+    if (isError) return "Trying to connect to server..."
 
     return (
         <div

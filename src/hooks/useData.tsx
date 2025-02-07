@@ -1,10 +1,8 @@
 import useSWR from "swr";
-
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
+import {SERVER_PORT, SERVER_URL} from "../consts.ts";
 
 export interface DataPoint {
-    timestamp: number;
+    timestamp: string;
     value: number;
 }
 
@@ -16,7 +14,14 @@ interface ChartData {
 const fetcher = (url: string, init?: RequestInit) => fetch(url, init).then(res => res.json());
 
 export function useData() {
-    const {data, error, isLoading} = useSWR<[ChartData]>(`${SERVER_URL}:${SERVER_PORT}/data`, fetcher, {refreshInterval: 1000});
+    const {data, error, isLoading} = useSWR<[ChartData]>(
+        `${SERVER_URL}:${SERVER_PORT}/data`,
+        fetcher,
+        {
+            refreshInterval: 1000,
+            shouldRetryOnError: true,
+            errorRetryInterval: 1000
+        });
 
     return {
         data,
