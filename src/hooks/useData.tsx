@@ -1,31 +1,44 @@
 import useSWR from "swr";
-import {SERVER_PORT, SERVER_URL} from "../consts.ts";
+import { SERVER_PORT, SERVER_URL } from "../consts.ts";
+import { PerformanceMetrics, ChartData } from "../types.ts";
 
-export interface DataPoint {
-    timestamp: string;
-    value: number;
-}
+const metricsHistory: PerformanceMetrics[] = [];
 
-interface ChartData {
-    chartId: number;
-    data: DataPoint[];
-}
+const fetcher = async (url: string, init?: RequestInit) => {
+  const startTime = performance.now();
+  const response = await fetch(url, init);
+  const endTime = performance.now();
 
-const fetcher = (url: string, init?: RequestInit) => fetch(url, init).then(res => res.json());
+  const responseText = await response.text();
+  const payloadSize = new Blob([responseText]).size;
+
+  const requestTime = endTime - startTime;
+
+  metricsHistory.push({
+    requestTime,
+    payloadSize,
+    timestamp: Date.now(),
+  });
+
+  if (metricsHistory.length > 20) {
+    metricsHistory.shift();
+  }
+
+  const data = JSON.parse(responseText);
+  return data;
+};
 
 export function useData() {
-    const {data, error, isLoading} = useSWR<[ChartData]>(
-        `${SERVER_URL}:${SERVER_PORT}/data`,
-        fetcher,
-        {
-            refreshInterval: 1000,
-            shouldRetryOnError: true,
-            errorRetryInterval: 1000
-        });
+  const { data, error, isLoading } = useSWR<ChartData[]>(`${SERVER_URL}:${SERVER_PORT}/data`, fetcher, {
+    refreshInterval: 1000,
+    shouldRetryOnError: true,
+    errorRetryInterval: 1000,
+  });
 
-    return {
-        data,
-        isLoading,
-        isError: error,
-    };
+  return {
+    data,
+    isLoading,
+    isError: error,
+    metrics: metricsHistory,
+  };
 }

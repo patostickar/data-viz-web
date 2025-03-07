@@ -1,7 +1,4 @@
-import {createRoot} from 'react-dom/client'
-import Chart from "./Chart.tsx";
-import {Dashboard} from "./Dashboard.tsx";
+import { createRoot } from "react-dom/client";
+import { Dashboard } from "./Dashboard.tsx";
 
-createRoot(document.getElementById('root')!).render(
-        <Dashboard/>
-)
+createRoot(document.getElementById("root")!).render(<Dashboard />);
