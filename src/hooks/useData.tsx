@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import { SERVER_PORT, SERVER_URL } from "../consts.ts";
-import { PerformanceMetrics, ChartData } from "../types.ts";
+import { PerformanceMetrics, ChartData } from "../models.ts";
 
 const metricsHistory: PerformanceMetrics[] = [];
 

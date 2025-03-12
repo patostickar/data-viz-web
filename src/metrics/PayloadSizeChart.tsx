@@ -1,5 +1,5 @@
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
-import { PerformanceMetrics } from "../types";
+import { PerformanceMetrics } from "../models.ts";
 import { COLORS } from "../consts";
 
 export function PayloadSizeChart({ data }: { data: PerformanceMetrics[] }) {
