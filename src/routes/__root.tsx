@@ -1,17 +1,36 @@
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { useConnection } from "../hooks/useConnection";
 
-export const Route = createRootRoute({
-  component: () => (
+const RootRouteComponent = () => {
+  const { connectionType, setConnectionType } = useConnection();
+
+  return (
     <>
-      <div className="p-2 flex gap-2">
-        <Link to="/rest" className="[&.active]:font-bold">
-          REST
-        </Link>
+      <div className="p-4 bg-gray-100 border-b border-gray-200">
+        <nav className="flex gap-4">
+          <Link
+            to="/rest"
+            className={`nav-button ${connectionType === "rest" ? "active" : "inactive"}`}
+            onClick={() => setConnectionType("rest")}
+          >
+            REST
+          </Link>
+          <Link
+            to="/graphql"
+            className={`nav-button ${connectionType === "graphql" ? "active" : "inactive"}`}
+            onClick={() => setConnectionType("graphql")}
+          >
+            GraphQL
+          </Link>
+        </nav>
       </div>
-      <hr />
       <Outlet />
       <TanStackRouterDevtools />
     </>
-  ),
+  );
+};
+
+export const Route = createRootRoute({
+  component: RootRouteComponent,
 });

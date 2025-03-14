@@ -1,6 +1,6 @@
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
-import { PerformanceMetrics } from "../models.ts";
-import { COLORS } from "../consts";
+import { PerformanceMetrics } from "../../models.ts";
+import { COLORS } from "../../consts.ts";
 
 export function RequestTimeChart({ data }: { data: PerformanceMetrics[] }) {
   const chartData = data.slice(-20);

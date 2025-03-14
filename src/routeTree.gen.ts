@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as RestImport } from './routes/rest'
+import { Route as GraphqlImport } from './routes/graphql'
 
 // Create/Update Routes
 
@@ -21,10 +22,23 @@ const RestRoute = RestImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const GraphqlRoute = GraphqlImport.update({
+  id: '/graphql',
+  path: '/graphql',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/graphql': {
+      id: '/graphql'
+      path: '/graphql'
+      fullPath: '/graphql'
+      preLoaderRoute: typeof GraphqlImport
+      parentRoute: typeof rootRoute
+    }
     '/rest': {
       id: '/rest'
       path: '/rest'
@@ -38,32 +52,37 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
+  '/graphql': typeof GraphqlRoute
   '/rest': typeof RestRoute
 }
 
 export interface FileRoutesByTo {
+  '/graphql': typeof GraphqlRoute
   '/rest': typeof RestRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
+  '/graphql': typeof GraphqlRoute
   '/rest': typeof RestRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/rest'
+  fullPaths: '/graphql' | '/rest'
   fileRoutesByTo: FileRoutesByTo
-  to: '/rest'
-  id: '__root__' | '/rest'
+  to: '/graphql' | '/rest'
+  id: '__root__' | '/graphql' | '/rest'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
+  GraphqlRoute: typeof GraphqlRoute
   RestRoute: typeof RestRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  GraphqlRoute: GraphqlRoute,
   RestRoute: RestRoute,
 }
 
@@ -77,8 +96,12 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
+        "/graphql",
         "/rest"
       ]
+    },
+    "/graphql": {
+      "filePath": "graphql.tsx"
     },
     "/rest": {
       "filePath": "rest.tsx"
