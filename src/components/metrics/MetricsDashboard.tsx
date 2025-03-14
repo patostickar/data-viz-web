@@ -1,12 +1,12 @@
-import { useConnection } from "../../hooks/useConnection";
-import { useConnectionData } from "../../hooks/useConnectionData";
+import { useProtocol } from "../../hooks/useProtocol";
+import { useData } from "../../hooks/useData";
 import { modeCalculator } from "./modeCalc";
 import { PayloadSizeChart } from "./PayloadSizeChart";
 import { RequestTimeChart } from "./RequestTimeChart";
 
 export function MetricsDashboard() {
-  const { connectionType } = useConnection();
-  const { metrics } = useConnectionData(connectionType);
+  const { connectionType } = useProtocol();
+  const { metrics } = useData(connectionType);
 
   const avgRequestTime = metrics.reduce((sum, metric) => sum + metric.requestTime, 0) / metrics.length;
   const modeRequestTime = modeCalculator(metrics.map((metric) => metric.requestTime));

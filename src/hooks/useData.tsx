@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import { SERVER_PORT, SERVER_URL } from "../consts.ts";
 import { PerformanceMetrics, ChartData } from "../models.ts";
-import { ConnectionType } from "../context/connectionContext.tsx";
+import { Protocol } from "../context/connectionContext.tsx";
 
 const metricsHistory: PerformanceMetrics[] = [];
 
@@ -78,7 +78,7 @@ const useGraphQL = () => {
     },
   );
 };
-export function useConnectionData(connectionType: ConnectionType) {
+export function useData(connectionType: Protocol) {
   let data, error, isLoading;
 
   const restData = useRest();

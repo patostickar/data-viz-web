@@ -1,9 +1,9 @@
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { useConnection } from "../hooks/useConnection";
+import { useProtocol } from "../hooks/useProtocol";
 
 const RootRouteComponent = () => {
-  const { connectionType, setConnectionType } = useConnection();
+  const { connectionType, setConnectionType } = useProtocol();
 
   return (
     <>

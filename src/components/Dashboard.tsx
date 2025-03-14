@@ -1,11 +1,11 @@
 import Chart from "./Chart";
-import { useConnectionData } from "../hooks/useConnectionData";
+import { useData } from "../hooks/useData";
 import { MetricsDashboard } from "./metrics/MetricsDashboard";
-import { useConnection } from "../hooks/useConnection";
+import { useProtocol } from "../hooks/useProtocol";
 
 export const Dashboard = () => {
-  const { connectionType } = useConnection();
-  const { data, isLoading, isError } = useConnectionData(connectionType);
+  const { connectionType } = useProtocol();
+  const { data, isLoading, isError } = useData(connectionType);
 
   if (isLoading) return "Loading...";
   if (isError) return "Trying to connect to server...";

@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@apollo/client": "^3.13.4",
     "@tanstack/react-router": "^1.114.17",
+    "graphql": "^16.10.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^2.15.1",
