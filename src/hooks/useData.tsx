@@ -1,63 +1,57 @@
 import useSWR from "swr";
 import {GRAPHQL_PORT, REST_PORT, SERVER_URL} from "../consts.ts";
-import {ChartData, ChartDataTimestamp, PerformanceMetrics} from "../models.ts";
+import {ChartData, ChartDataTimestamp, GqlResponse, PerformanceMetrics} from "../models.ts";
 import {Protocol} from "../context/protocolContext.tsx";
+import {GET_CHART_DATA} from "../queries.ts";
 
 const metricsHistory: PerformanceMetrics[] = [];
 
-const restFetcher = async (url: string, init?: RequestInit) => {
+const updateMetrics = (payloadSize: number, timestamp: number): void => {
+  const now = Date.now();
+  const requestTime = now - timestamp;
+
+  metricsHistory.push({
+    requestTime,
+    payloadSize,
+    timestamp: now,
+  });
+
+  if (metricsHistory.length > 20) {
+    metricsHistory.shift();
+  }
+}
+
+const restFetcher = async (url: string, init?: RequestInit): Promise<ChartData[]> => {
   const response = await fetch(url, init);
   const responseText = await response.text();
   const payloadSize = new Blob([responseText]).size;
   const json: ChartDataTimestamp = JSON.parse(responseText);
 
-  const now = Date.now();
-  const requestTime = now - json.timestamp;
-
-  metricsHistory.push({
-    requestTime,
-    payloadSize,
-    timestamp: now,
-  });
-
-  if (metricsHistory.length > 20) {
-    metricsHistory.shift();
-  }
+  updateMetrics(payloadSize, json.timestamp);
 
   return json.chartData;
 };
 
-const graphqlFetcher = async (url: string, query: string) => {
+const graphqlFetcher = async (url: string): Promise<ChartData[]> => {
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({query}),
+    body: JSON.stringify({query: GET_CHART_DATA, variables: {}}),
   });
   const responseText = await response.text();
   const payloadSize = new Blob([responseText]).size;
-  const json: ChartDataTimestamp = JSON.parse(responseText);
+  const {data: {getCharts: {chartData, timestamp}}}: GqlResponse<ChartDataTimestamp> = JSON.parse(responseText);
 
-  const now = Date.now();
-  const requestTime = now - json.timestamp;
+  updateMetrics(payloadSize, timestamp);
 
-  metricsHistory.push({
-    requestTime,
-    payloadSize,
-    timestamp: now,
-  });
-
-  if (metricsHistory.length > 20) {
-    metricsHistory.shift();
-  }
-
-  return json.chartData;
+  return chartData;
 };
 
 export function useData(connectionType: Protocol) {
   let path: string;
-  let fetcher;
+  let fetcher: (url: string, init?: RequestInit) => Promise<ChartData[]>;
   let port: number;
 
   switch (connectionType) {
@@ -69,7 +63,7 @@ export function useData(connectionType: Protocol) {
     case "graphql":
       port = GRAPHQL_PORT
       path = "graphql";
-      fetcher = (url: string) => graphqlFetcher(url, "{ yourGraphQLQuery }");
+      fetcher = graphqlFetcher;
       break;
   }
   const {data, error, isLoading} = useSWR<ChartData[]>(`${SERVER_URL}:${port}/${path}`, fetcher, {

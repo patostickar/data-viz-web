@@ -5,7 +5,7 @@ export interface AppConfig {
 
 export interface ChartPoint {
   timestamp: string;
-  values: { [plotID: string]: number };
+  values: number[];
 }
 
 export interface ChartData {
@@ -22,4 +22,10 @@ export interface PerformanceMetrics {
   requestTime: number;
   payloadSize: number;
   timestamp: number;
+}
+
+export interface GqlResponse<T> {
+  data: {
+    getCharts: T;
+  }
 }

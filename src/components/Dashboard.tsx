@@ -6,6 +6,7 @@ import { useProtocol } from "../hooks/useProtocol";
 export const Dashboard = () => {
   const { connectionType } = useProtocol();
   const { data, isLoading, isError } = useData(connectionType);
+  console.log(data)
 
   if (isLoading) return "Loading...";
   if (isError) return "Trying to connect to server...";

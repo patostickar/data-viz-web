@@ -1,9 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
+import { Dashboard } from "../components/Dashboard";
 
-export const Route = createFileRoute('/graphql')({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  return <div>Hello "/graphql"!</div>
-}
+export const Route = createFileRoute("/graphql")({
+  component: Dashboard,
+});
