@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import { SERVER_PORT, SERVER_URL } from "../consts.ts";
 import { PerformanceMetrics, ChartData } from "../models.ts";
-import { Protocol } from "../context/connectionContext.tsx";
+import { Protocol } from "../context/protocolContext.tsx";
 
 const metricsHistory: PerformanceMetrics[] = [];
 
@@ -25,16 +25,7 @@ const restFetcher = async (url: string, init?: RequestInit) => {
     metricsHistory.shift();
   }
 
-  const data = JSON.parse(responseText);
-  return data;
-};
-
-const useRest = () => {
-  return useSWR<ChartData[]>(`${SERVER_URL}:${SERVER_PORT}/data`, restFetcher, {
-    refreshInterval: 1000,
-    shouldRetryOnError: true,
-    errorRetryInterval: 1000,
-  });
+  return JSON.parse(responseText);
 };
 
 const graphqlFetcher = async (url: string, query: string) => {
@@ -63,38 +54,28 @@ const graphqlFetcher = async (url: string, query: string) => {
     metricsHistory.shift();
   }
 
-  const data = JSON.parse(responseText);
-  return data;
+  return JSON.parse(responseText);
 };
 
-const useGraphQL = () => {
-  return useSWR<ChartData[]>(
-    `${SERVER_URL}:${SERVER_PORT}/graphql`,
-    (url) => graphqlFetcher(url, "{ yourGraphQLQuery }"),
-    {
-      refreshInterval: 1000,
-      shouldRetryOnError: true,
-      errorRetryInterval: 1000,
-    },
-  );
-};
 export function useData(connectionType: Protocol) {
-  let data, error, isLoading;
-
-  const restData = useRest();
-  const graphQLData = useGraphQL();
+  let path: string;
+  let fetcher;
 
   switch (connectionType) {
     case "rest":
-      ({ data, error, isLoading } = restData);
+      path = "data";
+      fetcher = restFetcher;
       break;
     case "graphql":
-      ({ data, error, isLoading } = graphQLData);
-      break;
-    default:
-      // Handle unknown connection types
+      path = "graphql";
+      fetcher = (url: string) => graphqlFetcher(url, "{ yourGraphQLQuery }");
       break;
   }
+  const { data, error, isLoading } = useSWR<ChartData[]>(`${SERVER_URL}:${SERVER_PORT}/${path}`, fetcher, {
+    refreshInterval: 1000,
+    shouldRetryOnError: true,
+    errorRetryInterval: 1000,
+  });
 
   return {
     data,
