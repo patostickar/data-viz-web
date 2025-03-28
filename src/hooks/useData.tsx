@@ -1,7 +1,7 @@
 import useSWR from "swr";
-import { SERVER_PORT, SERVER_URL } from "../consts.ts";
-import { PerformanceMetrics, ChartDataTimestamp, ChartData } from "../models.ts";
-import { Protocol } from "../context/protocolContext.tsx";
+import {GRAPHQL_PORT, REST_PORT, SERVER_URL} from "../consts.ts";
+import {ChartData, ChartDataTimestamp, PerformanceMetrics} from "../models.ts";
+import {Protocol} from "../context/protocolContext.tsx";
 
 const metricsHistory: PerformanceMetrics[] = [];
 
@@ -33,7 +33,7 @@ const graphqlFetcher = async (url: string, query: string) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ query }),
+    body: JSON.stringify({query}),
   });
   const responseText = await response.text();
   const payloadSize = new Blob([responseText]).size;
@@ -58,18 +58,21 @@ const graphqlFetcher = async (url: string, query: string) => {
 export function useData(connectionType: Protocol) {
   let path: string;
   let fetcher;
+  let port: number;
 
   switch (connectionType) {
     case "rest":
+      port = REST_PORT;
       path = "data";
       fetcher = restFetcher;
       break;
     case "graphql":
+      port = GRAPHQL_PORT
       path = "graphql";
       fetcher = (url: string) => graphqlFetcher(url, "{ yourGraphQLQuery }");
       break;
   }
-  const { data, error, isLoading } = useSWR<ChartData[]>(`${SERVER_URL}:${SERVER_PORT}/${path}`, fetcher, {
+  const {data, error, isLoading} = useSWR<ChartData[]>(`${SERVER_URL}:${port}/${path}`, fetcher, {
     refreshInterval: 1000,
     shouldRetryOnError: true,
     errorRetryInterval: 1000,
