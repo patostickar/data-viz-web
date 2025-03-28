@@ -1,35 +1,33 @@
 import useSWR from "swr";
 import { SERVER_PORT, SERVER_URL } from "../consts.ts";
-import { PerformanceMetrics, ChartData } from "../models.ts";
+import { PerformanceMetrics, ChartDataTimestamp, ChartData } from "../models.ts";
 import { Protocol } from "../context/protocolContext.tsx";
 
 const metricsHistory: PerformanceMetrics[] = [];
 
 const restFetcher = async (url: string, init?: RequestInit) => {
-  const startTime = performance.now();
   const response = await fetch(url, init);
-  const endTime = performance.now();
-
   const responseText = await response.text();
   const payloadSize = new Blob([responseText]).size;
+  const json: ChartDataTimestamp = JSON.parse(responseText);
 
-  const requestTime = endTime - startTime;
+  const now = Date.now();
+  const requestTime = now - json.timestamp;
 
   metricsHistory.push({
     requestTime,
     payloadSize,
-    timestamp: Date.now(),
+    timestamp: now,
   });
 
   if (metricsHistory.length > 20) {
     metricsHistory.shift();
   }
 
-  return JSON.parse(responseText);
+  return json.chartData;
 };
 
 const graphqlFetcher = async (url: string, query: string) => {
-  const startTime = performance.now();
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -37,24 +35,24 @@ const graphqlFetcher = async (url: string, query: string) => {
     },
     body: JSON.stringify({ query }),
   });
-  const endTime = performance.now();
-
   const responseText = await response.text();
   const payloadSize = new Blob([responseText]).size;
+  const json: ChartDataTimestamp = JSON.parse(responseText);
 
-  const requestTime = endTime - startTime;
+  const now = Date.now();
+  const requestTime = now - json.timestamp;
 
   metricsHistory.push({
     requestTime,
     payloadSize,
-    timestamp: Date.now(),
+    timestamp: now,
   });
 
   if (metricsHistory.length > 20) {
     metricsHistory.shift();
   }
 
-  return JSON.parse(responseText);
+  return json.chartData;
 };
 
 export function useData(connectionType: Protocol) {

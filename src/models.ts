@@ -13,6 +13,11 @@ export interface ChartData {
   data: ChartPoint[];
 }
 
+export interface ChartDataTimestamp {
+  timestamp: number;
+  chartData: ChartData[];
+}
+
 export interface PerformanceMetrics {
   requestTime: number;
   payloadSize: number;
