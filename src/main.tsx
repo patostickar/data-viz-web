@@ -14,7 +14,7 @@ declare module "@tanstack/react-router" {
 }
 
 const client = new ApolloClient({
-  uri: `${SERVER_URL}/${GRAPHQL_PORT}`,
+  uri: `${SERVER_URL}:${GRAPHQL_PORT}`,
   cache: new InMemoryCache(),
 });
 
