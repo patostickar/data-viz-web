@@ -1,8 +1,6 @@
 import Chart from "./Chart";
 import { useData } from "../hooks/useData";
-import { MetricsDashboard } from "./metrics/MetricsDashboard";
 import { useProtocol } from "../hooks/useProtocol";
-import {Settings} from "./Settings.tsx";
 
 export const Dashboard = () => {
   const { connectionType } = useProtocol();
@@ -13,8 +11,6 @@ export const Dashboard = () => {
 
   return (
     <>
-      <Settings />
-      <MetricsDashboard />
       <h2 className="text-xl font-bold mb-4">Charts</h2>
       <div
         className="chart-grid"

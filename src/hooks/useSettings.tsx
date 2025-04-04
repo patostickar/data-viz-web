@@ -1,33 +1,38 @@
-import {gql, useMutation, useQuery} from "@apollo/client";
+import {useMutation, useQuery} from "@apollo/client";
+import {
+  GetSettingsDocument,
+  GetSettingsQuery,
+  SettingsInput,
+  UpdateSettingsDocument,
+  UpdateSettingsMutation
+} from "../generated/graphql.ts";
 
-const GET_SETTINGS = gql`
-  query GetSettings {
-    settings {
-      NumPlotsPerChart
-      NumPoints
-      PollInterval
-    }
-  }
-`;
+// const GET_SETTINGS = gql`
+//   query GetSettings {
+//     settings {
+//       NumPlotsPerChart
+//       NumPoints
+//     }
+//   }
+// `;
 
-const UPDATE_SETTINGS = gql`
-  mutation UpdateSettings($settings: SettingsInput!) {
-    updateSettings(settings: $settings) {
-      NumPlotsPerChart
-      NumPoints
-      PollInterval
-    }
-  }
-`;
+// const UPDATE_SETTINGS = gql`
+//   mutation UpdateSettings($settings: SettingsInput!) {
+//     updateSettings(settings: $settings) {
+//       NumPlotsPerChart
+//       NumPoints
+//     }
+//   }
+// `;
 
 export function useSettings() {
-  const {data, loading, error} = useQuery(GET_SETTINGS);
-  const [updateSettings] = useMutation(UPDATE_SETTINGS);
+  const {data, loading, error} = useQuery<GetSettingsQuery>(GetSettingsDocument);
+  const [updateSettings] = useMutation<UpdateSettingsMutation>(UpdateSettingsDocument);
 
   return {
-    data,
+    settings: data?.settings,
     loading,
     error,
-    updateSettings: (newSettings) => updateSettings({variables: {settings: newSettings}}),
+    updateSettings: (newSettings: SettingsInput) => updateSettings({variables: {settings: newSettings}}),
   };
 }
