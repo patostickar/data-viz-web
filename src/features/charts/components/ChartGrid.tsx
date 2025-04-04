@@ -1,13 +1,11 @@
-import Chart from "./Chart";
-import { useData } from "../hooks/useData";
-import { useProtocol } from "../hooks/useProtocol";
+import Chart from "./Chart.tsx";
+import {useChartData} from "../hooks/useChartsData.ts";
 
-export const Dashboard = () => {
-  const { connectionType } = useProtocol();
-  const { data, isLoading, isError } = useData(connectionType);
+export const ChartGrid = () => {
+  const { data, loading, error } = useChartData();
 
-  if (isLoading) return "Loading plots...";
-  if (isError) return "Trying to connect to fetch plots...";
+  if (loading) return "Loading plots...";
+  if (error) return "Trying to connect to fetch plots...";
 
   return (
     <>

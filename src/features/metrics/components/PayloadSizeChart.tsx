@@ -1,8 +1,8 @@
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
-import { PerformanceMetrics } from "../../models.ts";
-import { COLORS } from "../../consts.ts";
+import {PerformanceMetrics} from "../types.ts";
+import {COLORS} from "../../../lib/constants/colors.ts";
 
-export function RequestTimeChart({ data }: { data: PerformanceMetrics[] }) {
+export function PayloadSizeChart({ data }: { data: PerformanceMetrics[] }) {
   const chartData = data.slice(-20);
 
   return (
@@ -14,15 +14,15 @@ export function RequestTimeChart({ data }: { data: PerformanceMetrics[] }) {
           tickFormatter={(tick) => new Date(tick).toLocaleTimeString()}
           tick={{ fontSize: 10 }}
         />
-        <YAxis tickFormatter={(tick) => `${tick.toFixed(0)}ms`} tick={{ fontSize: 10 }} />
+        <YAxis tickFormatter={(tick) => `${(tick / 1024).toFixed(1)}KB`} tick={{ fontSize: 10 }} />
         <Tooltip
-          formatter={(value: number) => [`${value.toFixed(2)} ms`, "Request Time"]}
+          formatter={(value: number) => [`${(value / 1024).toFixed(2)} KB`, "Payload Size"]}
           labelFormatter={(label) => new Date(label).toLocaleTimeString()}
         />
         <Line
           type="monotone"
-          dataKey="requestTime"
-          stroke={COLORS[COLORS.length - 1]}
+          dataKey="payloadSize"
+          stroke={COLORS[COLORS.length - 2]}
           isAnimationActive={false}
           dot={{ r: 2 }}
         />

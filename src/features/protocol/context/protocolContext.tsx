@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import {createContext, useContext, useState} from "react";
 
 export type Protocol = "rest" | "graphql";
 
@@ -13,4 +13,12 @@ export const ProtocolProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [connectionType, setConnectionType] = useState<Protocol>("rest");
 
   return <ProtocolContext.Provider value={{ connectionType, setConnectionType }}>{children}</ProtocolContext.Provider>;
+};
+
+export const useProtocol = () => {
+  const context = useContext(ProtocolContext);
+  if (!context) {
+    throw new Error("useProtocol must be used within a ConnectionProvider");
+  }
+  return context;
 };

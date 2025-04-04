@@ -1,11 +1,9 @@
-import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { routeTree } from "./routeTree.gen";
-import { createRoot } from "react-dom/client";
-import { ProtocolProvider } from "./context/protocolContext.tsx";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import {GRAPHQL_PORT, SERVER_URL} from "./consts.ts";
+import {createRouter, RouterProvider} from "@tanstack/react-router";
+import {createRoot} from "react-dom/client";
+import {AppProviders} from "./providers/AppProviders.tsx";
+import {routeTree} from "./routeTree.gen.ts";
 
-const router = createRouter({ routeTree });
+const router = createRouter({routeTree});
 
 declare module "@tanstack/react-router" {
   interface Register {
@@ -13,19 +11,12 @@ declare module "@tanstack/react-router" {
   }
 }
 
-const client = new ApolloClient({
-  uri: `${SERVER_URL}:${GRAPHQL_PORT}`,
-  cache: new InMemoryCache(),
-});
-
 const rootElement = document.getElementById("root")!;
 if (!rootElement.innerHTML) {
   const root = createRoot(rootElement);
   root.render(
-      <ProtocolProvider>
-        <ApolloProvider client={client}>
-          <RouterProvider router={router} />
-        </ApolloProvider>
-      </ProtocolProvider>
+    <AppProviders>
+        <RouterProvider router={router}/>
+    </AppProviders>
   );
 }

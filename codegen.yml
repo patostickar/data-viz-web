@@ -1,9 +1,9 @@
 schema:
-  - models/graphql/**
+  - models/graphql/*
 documents:
-  - src/**/*.{ts,tsx}
+  - src/api/**/*.{ts,tsx}
 generates:
-  src/generated/graphql.ts:
+  src/api/graphql/_generated_/types.ts:
     plugins:
       - "typescript"
       - "typescript-operations"
@@ -12,3 +12,7 @@ generates:
       withHooks: true
       withComponent: false
       withHOC: false
+      skipTypename: true
+hooks:
+  afterAllFileWrite:
+    - prettier --write                     # Auto-format generated files

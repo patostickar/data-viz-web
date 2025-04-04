@@ -1,8 +1,8 @@
-import {useSettings} from "../hooks/useSettings.tsx";
 import * as React from "react";
 import {useEffect, useState} from "react";
+import {useSettings} from "../hooks/useSettings.tsx";
 
-export const Settings = () => {
+export const SettingsForm = () => {
   const {settings, loading, error, updateSettings} = useSettings();
   const [numPlots, setNumPlots] = useState<number>(1);
   const [numPoints, setNumPoints] = useState<number>(100);

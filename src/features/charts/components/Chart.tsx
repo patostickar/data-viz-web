@@ -1,7 +1,7 @@
-import "../styles.css";
+import "../../../lib/styles/global.css";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
-import { COLORS } from "../consts.ts";
-import { ChartPoint } from "../models.ts";
+import {ChartPoint} from "../../../api/graphql/_generated_/types.ts";
+import {COLORS} from "../../../lib/constants/colors.ts";
 
 interface ChartProps {
   data: ChartPoint[];
