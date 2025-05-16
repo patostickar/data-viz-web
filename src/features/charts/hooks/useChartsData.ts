@@ -1,17 +1,17 @@
 import useSWR from 'swr';
 import {useMetrics} from "../../metrics/context/MetricsProvider.tsx";
-import {useProtocol} from "../../protocol/context/protocolContext.tsx";
 import {ChartData} from "../../../api/graphql/_generated_/types.ts";
 import {getGraphQLFetcher} from "../../../api/graphql/client.ts";
 import {getRestFetcher} from "../../../api/rest/client.ts";
 import {GRAPHQL_PORT, REST_PORT, SERVER_URL} from "../../../lib/constants/env.ts";
+import {useRouterState} from "@tanstack/react-router";
 
 export function useChartData() {
   const {trackApiRequest} = useMetrics();
-  const {connectionType} = useProtocol();
+  const {location: {pathname}} = useRouterState();
 
   const fetcher = async (url: string) => {
-    const client = connectionType === 'graphql'
+    const client = pathname === '/graphql'
       ? getGraphQLFetcher()
       : getRestFetcher();
 
@@ -19,7 +19,7 @@ export function useChartData() {
   };
 
   const {data, error, isLoading} = useSWR<[ChartData]>(
-    connectionType === 'graphql'
+    pathname === '/graphql'
       ? `${SERVER_URL}:${GRAPHQL_PORT}/graphql`
       : `${SERVER_URL}:${REST_PORT}/data`,
     fetcher,

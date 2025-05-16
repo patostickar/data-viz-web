@@ -1,10 +1,9 @@
-import {createRootRoute, Link, Outlet, redirect} from "@tanstack/react-router";
-import {useProtocol} from "../features/protocol/context/protocolContext.tsx";
+import {createRootRoute, Link, Outlet, redirect, useMatchRoute} from "@tanstack/react-router";
 import {useMetrics} from "../features/metrics/context/MetricsProvider.tsx";
 
 const RootRouteComponent = () => {
-  const {connectionType, setConnectionType} = useProtocol();
   const {setMetrics} = useMetrics()
+  const matchRoute = useMatchRoute();
 
   return (
     <>
@@ -12,9 +11,8 @@ const RootRouteComponent = () => {
         <nav className="flex gap-4">
           <Link
             to="/rest"
-            className={`nav-button ${connectionType === "rest" ? "active" : "inactive"}`}
+            className={`nav-button ${matchRoute({to: "/rest"}) ? "active" : "inactive"}`}
             onClick={() => {
-              setConnectionType("rest")
               setMetrics([])
             }}
           >
@@ -22,9 +20,8 @@ const RootRouteComponent = () => {
           </Link>
           <Link
             to="/graphql"
-            className={`nav-button ${connectionType === "graphql" ? "active" : "inactive"}`}
+            className={`nav-button ${matchRoute({to: "/graphql"}) ? "active" : "inactive"}`}
             onClick={() => {
-              setConnectionType("graphql")
               setMetrics([])
             }}
           >
