@@ -1,9 +1,9 @@
 import {GET_CHART_DATA} from "./queries.ts";
-import {ChartDataTimestamp} from "./_generated_/types.ts";
+import {ChartData} from "./_generated_/types.ts";
 
 export const getGraphQLFetcher = () => {
   return {
-    fetcher: async (url: string): Promise<ChartDataTimestamp> => {
+    fetcher: async (url: string): Promise<Array<ChartData>> => {
       const response = await fetch(url, {
         method: 'POST',
         headers: {

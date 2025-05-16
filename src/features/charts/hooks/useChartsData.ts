@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import {useMetrics} from "../../metrics/context/MetricsProvider.tsx";
 import {useProtocol} from "../../protocol/context/protocolContext.tsx";
-import {ChartDataTimestamp} from "../../../api/graphql/_generated_/types.ts";
+import {ChartData} from "../../../api/graphql/_generated_/types.ts";
 import {getGraphQLFetcher} from "../../../api/graphql/client.ts";
 import {getRestFetcher} from "../../../api/rest/client.ts";
 import {GRAPHQL_PORT, REST_PORT, SERVER_URL} from "../../../lib/constants/env.ts";
@@ -18,7 +18,7 @@ export function useChartData() {
     return trackApiRequest(() => client.fetcher(url));
   };
 
-  const {data, error, isLoading} = useSWR<ChartDataTimestamp>(
+  const {data, error, isLoading} = useSWR<[ChartData]>(
     connectionType === 'graphql'
       ? `${SERVER_URL}:${GRAPHQL_PORT}/graphql`
       : `${SERVER_URL}:${REST_PORT}/data`,
@@ -32,7 +32,7 @@ export function useChartData() {
   );
 
   return {
-    data: data?.chartData,
+    data: data,
     loading: isLoading,
     error,
   };

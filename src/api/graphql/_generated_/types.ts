@@ -23,11 +23,6 @@ export type ChartData = {
   data: Array<ChartPoint>;
 };
 
-export type ChartDataTimestamp = {
-  chartData: Array<ChartData>;
-  timestamp: Scalars["Int64"]["output"];
-};
-
 export type ChartPoint = {
   timestamp: Scalars["String"]["output"];
   values: Array<Scalars["Float"]["output"]>;
@@ -42,7 +37,7 @@ export type MutationUpdateSettingsArgs = {
 };
 
 export type Query = {
-  getCharts?: Maybe<ChartDataTimestamp>;
+  getCharts: Array<ChartData>;
   settings?: Maybe<Settings>;
 };
 
@@ -65,15 +60,6 @@ export type UpdateSettingsMutationVariables = Exact<{
 }>;
 
 export type UpdateSettingsMutation = { updateSettings?: { NumPlotsPerChart: number; NumPoints: number } | null };
-
-export type GetChartDataTimestampQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetChartDataTimestampQuery = {
-  getCharts?: {
-    timestamp: any;
-    chartData: Array<{ chartId: string; data: Array<{ timestamp: string; values: Array<number> }> }>;
-  } | null;
-};
 
 export const GetSettingsDocument = gql`
   query GetSettings {
@@ -159,70 +145,4 @@ export type UpdateSettingsMutationResult = Apollo.MutationResult<UpdateSettingsM
 export type UpdateSettingsMutationOptions = Apollo.BaseMutationOptions<
   UpdateSettingsMutation,
   UpdateSettingsMutationVariables
->;
-export const GetChartDataTimestampDocument = gql`
-  query GetChartDataTimestamp {
-    getCharts {
-      timestamp
-      chartData {
-        chartId
-        data {
-          timestamp
-          values
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useGetChartDataTimestampQuery__
- *
- * To run a query within a React component, call `useGetChartDataTimestampQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetChartDataTimestampQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetChartDataTimestampQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetChartDataTimestampQuery(
-  baseOptions?: Apollo.QueryHookOptions<GetChartDataTimestampQuery, GetChartDataTimestampQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<GetChartDataTimestampQuery, GetChartDataTimestampQueryVariables>(
-    GetChartDataTimestampDocument,
-    options,
-  );
-}
-export function useGetChartDataTimestampLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<GetChartDataTimestampQuery, GetChartDataTimestampQueryVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<GetChartDataTimestampQuery, GetChartDataTimestampQueryVariables>(
-    GetChartDataTimestampDocument,
-    options,
-  );
-}
-export function useGetChartDataTimestampSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<GetChartDataTimestampQuery, GetChartDataTimestampQueryVariables>,
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<GetChartDataTimestampQuery, GetChartDataTimestampQueryVariables>(
-    GetChartDataTimestampDocument,
-    options,
-  );
-}
-export type GetChartDataTimestampQueryHookResult = ReturnType<typeof useGetChartDataTimestampQuery>;
-export type GetChartDataTimestampLazyQueryHookResult = ReturnType<typeof useGetChartDataTimestampLazyQuery>;
-export type GetChartDataTimestampSuspenseQueryHookResult = ReturnType<typeof useGetChartDataTimestampSuspenseQuery>;
-export type GetChartDataTimestampQueryResult = Apollo.QueryResult<
-  GetChartDataTimestampQuery,
-  GetChartDataTimestampQueryVariables
 >;
