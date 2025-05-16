@@ -18,7 +18,7 @@ export function useChartData() {
     return trackApiRequest(() => client.fetcher(url));
   };
 
-  const {data, error, isLoading} = useSWR<[ChartData]>(
+  const {data, error, isLoading} = useSWR<Array<ChartData>>(
     pathname === '/graphql'
       ? `${SERVER_URL}:${GRAPHQL_PORT}/graphql`
       : `${SERVER_URL}:${REST_PORT}/data`,

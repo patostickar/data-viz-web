@@ -1,8 +1,8 @@
-import {ChartDataTimestamp} from "../graphql/_generated_/types.ts";
+import {ChartData} from "../graphql/_generated_/types.ts";
 
 export const getRestFetcher = () => {
   return {
-    fetcher: async (url: string): Promise<ChartDataTimestamp> => {
+    fetcher: async (url: string): Promise<Array<ChartData>> => {
       const response = await fetch(url);
 
       if (!response.ok) {
