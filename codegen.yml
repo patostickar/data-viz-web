@@ -1,5 +1,5 @@
 schema:
-  - models/graphql/*
+  - data-viz-models/graphql/*
 documents:
   - src/api/**/*.{ts,tsx}
 generates:
