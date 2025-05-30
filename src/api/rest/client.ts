@@ -12,7 +12,7 @@ export const getRestFetcher = (): { fetcher: (url?: string) => Promise<[Array<Ch
       const blob = await response.blob();
       const rawSize = blob.size;
 
-      const data = JSON.parse(await blob.text()).data?.getCharts;
+      const data = JSON.parse(await blob.text());
 
       return [data, rawSize];
     }
