@@ -5,7 +5,7 @@ import {getGraphQLFetcher} from "../../../api/graphql/client.ts";
 import {getRestFetcher} from "../../../api/rest/client.ts";
 import {useRouterState} from "@tanstack/react-router";
 import {getGrpcFetcher} from "../../../api/grpc/client.ts";
-import {ChartData as GrpcChartData} from '../../../../models/charts_pb';
+import {ChartData as GrpcChartData} from '../../../api/grpc/_generated_/charts.ts';
 import {GRAPHQL_PORT, GRPC_PORT, REST_PORT, SERVER_URL} from "../../../lib/constants/env.ts";
 
 export function useChartData() {

@@ -27,6 +27,15 @@ const RootRouteComponent = () => {
           >
             GraphQL
           </Link>
+          <Link
+            to="/grpc"
+            className={`nav-button ${matchRoute({to: "/grpc"}) ? "active" : "inactive"}`}
+            onClick={() => {
+              setMetrics([])
+            }}
+          >
+            gRPC
+          </Link>
         </nav>
       </div>
       <Outlet/>

@@ -8,14 +8,15 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate": "graphql-codegen --config codegen.yml"
+    "gen:graphql": "graphql-codegen --config codegen.yml",
+    "gen:protobuf": "npx protoc -I=./data-viz-models/proto charts.proto --ts_out=./src/api/grpc/_generated_"
   },
   "dependencies": {
     "@apollo/client": "^3.13.4",
     "@tanstack/react-router": "^1.114.17",
-    "google-protobuf": "^3.21.4",
+    "@protobuf-ts/grpcweb-transport": "^2.9.3",
+    "@protobuf-ts/plugin": "^2.9.3",
     "graphql": "^16.10.0",
-    "grpc-web": "^1.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^2.15.1",
@@ -31,7 +32,6 @@
     "@graphql-codegen/typescript-react-apollo": "^4.3.2",
     "@tanstack/react-router-devtools": "^1.114.21",
     "@tanstack/router-plugin": "^1.114.17",
-    "@types/google-protobuf": "^3.15.12",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react-swc": "^3.5.0",
@@ -39,7 +39,6 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
-    "protoc-gen-js": "^3.21.4-4",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.22.0",
     "vite": "^6.1.0"

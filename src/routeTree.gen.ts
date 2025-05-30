@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as RestImport } from './routes/rest'
+import { Route as GrpcImport } from './routes/grpc'
 import { Route as GraphqlImport } from './routes/graphql'
 
 // Create/Update Routes
@@ -19,6 +20,12 @@ import { Route as GraphqlImport } from './routes/graphql'
 const RestRoute = RestImport.update({
   id: '/rest',
   path: '/rest',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const GrpcRoute = GrpcImport.update({
+  id: '/grpc',
+  path: '/grpc',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,6 +46,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GraphqlImport
       parentRoute: typeof rootRoute
     }
+    '/grpc': {
+      id: '/grpc'
+      path: '/grpc'
+      fullPath: '/grpc'
+      preLoaderRoute: typeof GrpcImport
+      parentRoute: typeof rootRoute
+    }
     '/rest': {
       id: '/rest'
       path: '/rest'
@@ -53,36 +67,41 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/graphql': typeof GraphqlRoute
+  '/grpc': typeof GrpcRoute
   '/rest': typeof RestRoute
 }
 
 export interface FileRoutesByTo {
   '/graphql': typeof GraphqlRoute
+  '/grpc': typeof GrpcRoute
   '/rest': typeof RestRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/graphql': typeof GraphqlRoute
+  '/grpc': typeof GrpcRoute
   '/rest': typeof RestRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/graphql' | '/rest'
+  fullPaths: '/graphql' | '/grpc' | '/rest'
   fileRoutesByTo: FileRoutesByTo
-  to: '/graphql' | '/rest'
-  id: '__root__' | '/graphql' | '/rest'
+  to: '/graphql' | '/grpc' | '/rest'
+  id: '__root__' | '/graphql' | '/grpc' | '/rest'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   GraphqlRoute: typeof GraphqlRoute
+  GrpcRoute: typeof GrpcRoute
   RestRoute: typeof RestRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   GraphqlRoute: GraphqlRoute,
+  GrpcRoute: GrpcRoute,
   RestRoute: RestRoute,
 }
 
@@ -97,11 +116,15 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/graphql",
+        "/grpc",
         "/rest"
       ]
     },
     "/graphql": {
       "filePath": "graphql.tsx"
+    },
+    "/grpc": {
+      "filePath": "grpc.tsx"
     },
     "/rest": {
       "filePath": "rest.tsx"

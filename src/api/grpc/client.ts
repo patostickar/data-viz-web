@@ -1,27 +1,22 @@
+import {GrpcWebFetchTransport} from "@protobuf-ts/grpcweb-transport";
 import {GRPC_PORT, SERVER_URL} from "../../lib/constants/env";
-import {ChartServiceClient} from "../../../models/ChartsServiceClientPb.ts";
-import {Empty} from "google-protobuf/google/protobuf/empty_pb";
-import {ChartData} from "../../../models/charts_pb";
+import {ChartServiceClient} from "./_generated_/charts.client.ts";
+import {ChartData} from "./_generated_/charts.ts";
 
-// Initialize gRPC client
-const client = new ChartServiceClient(`${SERVER_URL}:${GRPC_PORT}`,);
+const transport = new GrpcWebFetchTransport({
+    baseUrl: `${SERVER_URL}:${GRPC_PORT}`
+})
+const client = new ChartServiceClient(transport);
 
 export const getGrpcFetcher = (): { fetcher: () => Promise<[Array<ChartData>, number]> } => {
     return {
         fetcher: async (): Promise<[Array<ChartData>, number]> => {
-            return new Promise((resolve, reject) => {
-                client.getChartData(new Empty(), {}, (err, response) => {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
+            const {response} = await client.getChartData({});
+            const data = response.items;
 
-                    const data = response.getItemsList();
-                    const serializedSize = response.serializeBinary().length;
+            const serializedSize = 0; // Fallback approach
 
-                    resolve([data, serializedSize]);
-                });
-            });
+            return [data, serializedSize];
         }
     };
 };
