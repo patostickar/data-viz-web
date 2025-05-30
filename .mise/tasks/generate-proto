@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# mise description="Generate code from protobuf files"
+
+set -euo pipefail
+
+# Create the output directory
+mkdir -p models
+
+echo "Generating proto files..."
+
+# Generate JavaScript code
+protoc \
+  -I data-viz-models/proto \
+  -I. \
+  --js_out=import_style=commonjs,binary:models \
+  --grpc-web_out=import_style=typescript,mode=grpcwebtext:models \
+  data-viz-models/proto/*.proto
+
+echo "Proto files generated successfully."
