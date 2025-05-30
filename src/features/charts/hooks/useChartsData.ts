@@ -3,25 +3,46 @@ import {useMetrics} from "../../metrics/context/MetricsProvider.tsx";
 import {ChartData} from "../../../api/graphql/_generated_/types.ts";
 import {getGraphQLFetcher} from "../../../api/graphql/client.ts";
 import {getRestFetcher} from "../../../api/rest/client.ts";
-import {GRAPHQL_PORT, REST_PORT, SERVER_URL} from "../../../lib/constants/env.ts";
 import {useRouterState} from "@tanstack/react-router";
+import {getGrpcFetcher} from "../../../api/grpc/client.ts";
+import {ChartData as GrpcChartData} from '../../../../models/charts_pb';
+import {GRAPHQL_PORT, GRPC_PORT, REST_PORT, SERVER_URL} from "../../../lib/constants/env.ts";
 
 export function useChartData() {
   const {trackApiRequest} = useMetrics();
-  const {location: {pathname}} = useRouterState();
+  const routerState = useRouterState();
 
-  const fetcher = async (url: string) => {
-    const client = pathname === '/graphql'
-      ? getGraphQLFetcher()
-      : getRestFetcher();
+  const isGraphQL = routerState.location.pathname === "/graphql";
+  const isRest = routerState.location.pathname === "/rest";
+  const isGrpc = routerState.location.pathname === "/grpc";
 
-    return trackApiRequest(() => client.fetcher(url));
+  const getCacheKey = () => {
+    if (isGraphQL) {
+      return `${SERVER_URL}:${GRAPHQL_PORT}/graphql`;
+    } else if (isRest) {
+      return `${SERVER_URL}:${REST_PORT}/data`;
+    } else if (isGrpc) {
+      return `grpc:${SERVER_URL}:${GRPC_PORT}`;
+    }
+    return null;
   };
 
-  const {data, error, isLoading} = useSWR<Array<ChartData>>(
-    pathname === '/graphql'
-      ? `${SERVER_URL}:${GRAPHQL_PORT}/graphql`
-      : `${SERVER_URL}:${REST_PORT}/data`,
+  const fetcher = async (url: string): Promise<[Array<ChartData | GrpcChartData>, number]> => {
+    if (isGraphQL) {
+      const client = getGraphQLFetcher();
+      return trackApiRequest(() => client.fetcher(url));
+    } else if (isRest) {
+      const client = getRestFetcher();
+      return trackApiRequest(() => client.fetcher(url));
+    } else if (isGrpc) {
+      const client = getGrpcFetcher();
+      return trackApiRequest(() => client.fetcher());
+    }
+    throw new Error('Invalid API type');
+  };
+
+  const {data, error, isLoading} = useSWR<[Array<ChartData | GrpcChartData>, number]>(
+    getCacheKey(),
     fetcher,
     {
       refreshInterval: 1000,
@@ -32,7 +53,7 @@ export function useChartData() {
   );
 
   return {
-    data: data,
+    data: data?.[0] as Array<ChartData>, // Extract just the data
     loading: isLoading,
     error,
   };

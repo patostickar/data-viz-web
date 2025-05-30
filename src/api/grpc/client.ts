@@ -6,16 +6,20 @@ import {ChartData} from "../../../models/charts_pb";
 // Initialize gRPC client
 const client = new ChartServiceClient(`${SERVER_URL}:${GRPC_PORT}`,);
 
-export const getGrpcFetcher = (): { fetcher: (url?: string) => Promise<Array<ChartData>> } => {
+export const getGrpcFetcher = (): { fetcher: () => Promise<[Array<ChartData>, number]> } => {
     return {
-        fetcher: async (): Promise<Array<ChartData>> => {
+        fetcher: async (): Promise<[Array<ChartData>, number]> => {
             return new Promise((resolve, reject) => {
                 client.getChartData(new Empty(), {}, (err, response) => {
                     if (err) {
                         reject(err);
                         return;
                     }
-                    resolve(response.getItemsList());
+
+                    const data = response.getItemsList();
+                    const serializedSize = response.serializeBinary().length;
+
+                    resolve([data, serializedSize]);
                 });
             });
         }
