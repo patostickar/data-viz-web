@@ -4,7 +4,7 @@ import type {PerformanceMetrics} from '../types';
 interface MetricsContextType {
   metrics: PerformanceMetrics[];
   setMetrics: React.Dispatch<React.SetStateAction<PerformanceMetrics[]>>;
-  trackApiRequest:  <T>(fn: () => Promise<[T, number]>) => Promise<[T, number]>;
+  trackApiRequest:  <T>(fn: () => Promise<[T, number]>) => Promise<T>;
 }
 
 export const MetricsContext = createContext<MetricsContextType | undefined>(undefined);
@@ -12,7 +12,7 @@ export const MetricsContext = createContext<MetricsContextType | undefined>(unde
 export const MetricsProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
   const [metrics, setMetrics] = useState<PerformanceMetrics[]>([]);
 
-  const trackApiRequest = useCallback(async <T, >(fn: () => Promise<[T, number]>): Promise<[T, number]> => {
+  const trackApiRequest = useCallback(async <T, >(fn: () => Promise<[T, number]>): Promise<T> => {
     const start = performance.now();
     try {
       const [response, rawSize] = await fn();
@@ -28,7 +28,7 @@ export const MetricsProvider: React.FC<{ children: React.ReactNode }> = ({childr
         return updated.length > 20 ? updated.slice(1) : updated;
       });
 
-      return [response, rawSize];
+      return response;
     } catch (error) {
       // Track failed requests too
       setMetrics(prev => {

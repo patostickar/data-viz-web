@@ -27,7 +27,7 @@ export function useChartData() {
     return null;
   };
 
-  const fetcher = async (url: string): Promise<[Array<ChartData | GrpcChartData>, number]> => {
+  const fetcher = async (url: string): Promise<Array<ChartData | GrpcChartData>> => {
     if (isGraphQL) {
       const client = getGraphQLFetcher();
       return trackApiRequest(() => client.fetcher(url));
@@ -41,7 +41,7 @@ export function useChartData() {
     throw new Error('Invalid API type');
   };
 
-  const {data, error, isLoading} = useSWR<[Array<ChartData | GrpcChartData>, number]>(
+  const {data, error, isLoading} = useSWR<Array<ChartData | GrpcChartData>>(
     getCacheKey(),
     fetcher,
     {
@@ -52,9 +52,25 @@ export function useChartData() {
     }
   );
 
-  return {
-    data: data?.[0] as Array<ChartData>, // Extract just the data
+
+
+  const response: {
+    loading: boolean;
+    error: unknown;
+    grpcData?: GrpcChartData[];
+    data?: ChartData[];
+  } = {
     loading: isLoading,
-    error,
+    error: error
   };
+
+
+  if (isGrpc && data) {
+    response.grpcData = data as GrpcChartData[];
+  } else {
+    response.data = data as ChartData[];
+  }
+
+
+  return response
 }
