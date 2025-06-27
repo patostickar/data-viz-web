@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "gen:graphql": "graphql-codegen --config codegen.yml",
-    "gen:protobuf": "npx protoc -I=./data-viz-models/proto charts.proto --ts_out=./src/api/grpc/_generated_"
+    "gen:protobuf": "npx protoc --proto_path=data-viz-models/proto charts.proto --ts_out=src/api/grpc/_generated_"
   },
   "dependencies": {
     "@apollo/client": "^3.13.4",

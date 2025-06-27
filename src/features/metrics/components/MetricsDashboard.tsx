@@ -6,10 +6,8 @@ import {modeFast} from "simple-statistics";
 export function MetricsDashboard() {
   const {metrics} = useMetrics();
 
-  const avgRequestTime = metrics.reduce((sum, metric) => sum + metric.requestTime, 0) / metrics.length;
   const modeRequestTime = metrics.length > 0 && modeFast(metrics.map((metric) => metric.requestTime));
 
-  const avgPayloadSize = metrics.reduce((sum, metric) => sum + metric.payloadSize, 0) / metrics.length;
   const modePayloadSize = metrics.length > 0 && modeFast(metrics.map((metric) => metric.payloadSize));
 
   return (
@@ -26,13 +24,11 @@ export function MetricsDashboard() {
       >
         <div>
           <h3 className="font-semibold">Request Time</h3>
-          <p>Average: {isNaN(avgRequestTime) ? 0 : avgRequestTime.toFixed(2)} ms</p>
           <p>Mode: {modeRequestTime && modeRequestTime.toFixed(2)} ms</p>
           <RequestTimeChart data={metrics}/>
         </div>
         <div>
           <h3 className="font-semibold">Payload Size</h3>
-          <p>Average: {(isNaN(avgPayloadSize) ? 0 : (avgPayloadSize / 1024).toFixed(2))} KB</p>
           <p>Mode: {(modePayloadSize && (modePayloadSize / 1024).toFixed(2))} KB</p>
           <PayloadSizeChart data={metrics}/>
         </div>
