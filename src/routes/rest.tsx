@@ -1,6 +1,6 @@
 import {createFileRoute} from "@tanstack/react-router";
-import {App} from "../App.tsx";
+import {ChartGrid} from "../features/charts/components/ChartGrid.tsx";
 
 export const Route = createFileRoute("/rest")({
-  component: App,
+  component: ChartGrid,
 });

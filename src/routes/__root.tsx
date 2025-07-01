@@ -1,5 +1,7 @@
 import {createRootRoute, Link, Outlet, redirect, useMatchRoute} from "@tanstack/react-router";
 import {useMetrics} from "../features/metrics/context/MetricsProvider.tsx";
+import {SettingsForm} from "../features/settings/components/SettingsForm.tsx";
+import {MetricsDashboard} from "../features/metrics/components/MetricsDashboard.tsx";
 
 const RootRouteComponent = () => {
   const {setMetrics} = useMetrics()
@@ -38,6 +40,8 @@ const RootRouteComponent = () => {
           </Link>
         </nav>
       </div>
+      <SettingsForm/>
+      <MetricsDashboard/>
       <Outlet/>
     </>
   );

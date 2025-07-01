@@ -27,7 +27,6 @@ export const SettingsForm = () => {
   };
 
   const updateSettingsOnServer = (numPlots: number, points: number) => {
-    console.log("Updating settings:", {NumPlots: numPlots, NumPoints: points});
     updateSettings({
       NumPlotsPerChart: numPlots,
       NumPoints: points
@@ -66,9 +65,9 @@ export const SettingsForm = () => {
             className="border p-1 rounded"
             disabled={loading}
           >
-            <option value="1">1</option>
             <option value="10">10</option>
             <option value="100">100</option>
+            <option value="1000">1,000</option>
             <option value="10000">10,000</option>
             <option value="100000">100,000</option>
             <option value="1000000">1,000,000</option>

@@ -4,8 +4,8 @@ import {useChartData} from "../hooks/useChartsData.ts";
 export const ChartGrid = () => {
   const {data, grpcData, loading, error} = useChartData();
 
-  if (loading) return "Loading plots...";
-  if (error) return "Trying to connect to fetch plots...";
+  if (loading) return "Loading charts...";
+  if (error) return "Trying to connect to fetch charts...";
 
   return (
     <>

@@ -3,7 +3,7 @@ import {useCallback} from "react";
 import {GetSettingsDocument, SettingsInput, UpdateSettingsDocument} from "../../../api/graphql/_generated_/types.ts";
 
 export function useSettings() {
-  const {data, loading, error} = useQuery(GetSettingsDocument);
+  const {data, loading, error} = useQuery(GetSettingsDocument, {fetchPolicy: "cache-first"});
   const [updateSettingsMutation] = useMutation(UpdateSettingsDocument);
 
   const updateSettings = useCallback(

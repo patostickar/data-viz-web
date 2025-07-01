@@ -3,11 +3,9 @@ import {PerformanceMetrics} from "../types.ts";
 import {COLORS} from "../../../lib/constants/colors.ts";
 
 export function PayloadSizeChart({ data }: { data: PerformanceMetrics[] }) {
-  const chartData = data.slice(-20);
-
   return (
     <ResponsiveContainer width={"100%"} height={200}>
-      <LineChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+      <LineChart data={data} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
           dataKey="timestamp"

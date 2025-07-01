@@ -9,6 +9,13 @@ interface ChartProps {
 }
 
 export default function Chart({ data, index }: ChartProps) {
+  if (data.length * data[0].values.length > 10000) {
+    return (
+      <div className="text-2xl font-bold text-red-600">
+        Too many points to display.
+      </div>
+    );
+  }
   const chartData = data.map((point) => ({
     timestamp: point.timestamp,
     ...point.values,
