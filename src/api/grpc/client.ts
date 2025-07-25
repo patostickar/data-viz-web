@@ -1,5 +1,5 @@
 import {GrpcWebFetchTransport} from "@protobuf-ts/grpcweb-transport";
-import {GRPC_PORT, SERVER_URL} from "../../lib/constants/env";
+import {ENABLE_BODY_SIZE_MEASURE, GRPC_PORT, SERVER_URL} from "../../lib/constants/env";
 import {ChartServiceClient} from "./_generated_/charts.client.ts";
 import {ChartData, ChartDataList} from "./_generated_/charts.ts";
 
@@ -14,9 +14,13 @@ export const getGrpcFetcher = (): { fetcher: () => Promise<[Array<ChartData>, nu
       const {response} = await client.getChartData({});
       const data = response.items;
 
-      const binary = ChartDataList.toBinary(response);
+      let rawSize = 0;
 
-      return [data, binary.length];
+      if (ENABLE_BODY_SIZE_MEASURE == "true") {
+        rawSize = ChartDataList.toBinary(response).length
+      }
+
+      return [data, rawSize];
     }
   };
 };

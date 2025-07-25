@@ -17,9 +17,9 @@ import { MessageType } from "@protobuf-ts/runtime";
  */
 export interface ChartPoint {
     /**
-     * @generated from protobuf field: string timestamp = 1
+     * @generated from protobuf field: int64 timestamp_unix_seconds = 1
      */
-    timestamp: string;
+    timestampUnixSeconds: bigint;
     /**
      * @generated from protobuf field: repeated double values = 2
      */
@@ -51,13 +51,13 @@ export interface ChartDataList {
 class ChartPoint$Type extends MessageType<ChartPoint> {
     constructor() {
         super("charts.ChartPoint", [
-            { no: 1, name: "timestamp", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 1, name: "timestamp_unix_seconds", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
             { no: 2, name: "values", kind: "scalar", repeat: 1 /*RepeatType.PACKED*/, T: 1 /*ScalarType.DOUBLE*/ }
         ]);
     }
     create(value?: PartialMessage<ChartPoint>): ChartPoint {
         const message = globalThis.Object.create((this.messagePrototype!));
-        message.timestamp = "";
+        message.timestampUnixSeconds = 0n;
         message.values = [];
         if (value !== undefined)
             reflectionMergePartial<ChartPoint>(this, message, value);
@@ -68,8 +68,8 @@ class ChartPoint$Type extends MessageType<ChartPoint> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string timestamp */ 1:
-                    message.timestamp = reader.string();
+                case /* int64 timestamp_unix_seconds */ 1:
+                    message.timestampUnixSeconds = reader.int64().toBigInt();
                     break;
                 case /* repeated double values */ 2:
                     if (wireType === WireType.LengthDelimited)
@@ -90,9 +90,9 @@ class ChartPoint$Type extends MessageType<ChartPoint> {
         return message;
     }
     internalBinaryWrite(message: ChartPoint, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string timestamp = 1; */
-        if (message.timestamp !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.timestamp);
+        /* int64 timestamp_unix_seconds = 1; */
+        if (message.timestampUnixSeconds !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.timestampUnixSeconds);
         /* repeated double values = 2; */
         if (message.values.length) {
             writer.tag(2, WireType.LengthDelimited).fork();

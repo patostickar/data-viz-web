@@ -1,11 +1,15 @@
 import Chart from "./Chart.tsx";
 import {useChartData} from "../hooks/useChartsData.ts";
+import GrpcChart from "./GrpcChart.tsx";
 
 export const ChartGrid = () => {
   const {data, grpcData, loading, error} = useChartData();
 
   if (loading) return "Loading charts...";
-  if (error) return "Trying to connect to fetch charts...";
+  if (error) {
+    console.error("Error fetching charts:", error);
+    return "Error fetching charts";
+  }
 
   return (
     <>
@@ -28,7 +32,7 @@ export const ChartGrid = () => {
         {grpcData?.map((chartData, index) => (
           <div key={chartData.chartId} className="bg-white rounded-lg shadow-lg p-4 mb-6">
             <div className="h-64">
-              <Chart data={chartData?.points} index={index}/>
+              <GrpcChart data={chartData?.points} index={index}/>
             </div>
           </div>
         ))}
